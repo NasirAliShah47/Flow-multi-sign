@@ -16,11 +16,57 @@ const App = () => {
     fcl.currentUser().subscribe(setUser);
   }, [])
 
+  const setupAccount = async () => {
+    const transactionId = await fcl.send([
+      fcl.transaction`
+      import XGStudio from 0xff321cc072da62b3
+      transaction {
+        prepare(acct: AuthAccount) {
+
+        let collection  <- XGStudio.createEmptyCollection()
+        // store the empty NFT Collection in account storage
+        acct.save( <- collection, to:XGStudio.CollectionStoragePath)
+        log("Collection created for account".concat(acct.address.toString()))
+        // create a public capability for the Collection
+        acct.link<&{XGStudio.XGStudioCollectionPublic}>(XGStudio.CollectionPublicPath, target:XGStudio.CollectionStoragePath)        
+      }   
+    }
+    `,
+      fcl.payer(fcl.authz),
+      fcl.proposer(fcl.authz),
+      fcl.authorizations([fcl.authz]),
+      fcl.limit(9999)
+    ]).then(fcl.decode);
+
+    console.log(transactionId);
+  }
+
+  const destroyAccount = async () => {
+    const transactionId = await fcl.send([
+      fcl.transaction`
+      import XGStudio from 0xff321cc072da62b3
+      transaction(){
+          prepare(acct:AuthAccount){
+            let storage <- acct.load<@XGStudio.Collection>(from: XGStudio.CollectionStoragePath)
+                      ??panic("could not load")
+            destroy storage
+
+      }
+}
+      `,
+      fcl.payer(fcl.authz),
+      fcl.proposer(fcl.authz),
+      fcl.authorizations([fcl.authz]),
+      fcl.limit(9999)
+    ]).then(fcl.decode);
+
+    console.log(transactionId);
+  }
   const singleSign = async () => {
     const transactionId = await fcl.send([
       fcl.transaction`
       transaction() {
-        prepare(signer: AuthAccount) {
+        prepare(frontendUser: AuthAccount) {
 
         }
       }
@@ -33,6 +79,7 @@ const App = () => {
 
     console.log(transactionId);
   }
+
 
   const multiSign = async () => {
     const transactionId = await fcl.send([
@@ -62,6 +109,10 @@ const App = () => {
         </div>
         <button onClick={() => singleSign()}>Run Single-Sign Tx</button>
         <button onClick={() => multiSign()}>Run Multi-Sign Tx</button>
+        <div>
+          <button onClick={() => { setupAccount() }}>Run Setup Account Tx</button>
+          <button onClick={() => { destroyAccount() }}>Run Destroy Account Tx</button>
+        </div>
       </header>
     </div>
   );

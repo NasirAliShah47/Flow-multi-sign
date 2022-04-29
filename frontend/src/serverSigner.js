@@ -15,7 +15,7 @@ const getSignature = async (signable) => {
 
 export const serverAuthorization = async (account) => {
 
-  const addr = "0x46e63ea8da5c4335";
+  const addr = "0xff321cc072da62b3";
   const keyId = 0;
 
   return {
