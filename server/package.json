@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "@onflow/fcl": "^0.0.77",
+    "@onflow/rlp": "^1.0.0",
     "@onflow/types": "^0.0.6",
     "body-parser": "^1.19.1",
     "cors": "^2.8.5",

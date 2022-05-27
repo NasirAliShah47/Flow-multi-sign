@@ -7,7 +7,7 @@ const fcl = require("@onflow/fcl");
 const t = require("@onflow/types");
 fcl.config()
   .put("accessNode.api", "https://testnet.onflow.org")
-  .put("discovery.wallet", "https://flow-wallet-testnet.blocto.app/authn");
+  .put("challenge.handshake", "https://flow-wallet-testnet.blocto.app/authn");
 
 const App = () => {
   const [user, setUser] = useState();
@@ -19,18 +19,20 @@ const App = () => {
   const setupAccount = async () => {
     const transactionId = await fcl.send([
       fcl.transaction`
-      import XGStudio from 0xff321cc072da62b3
-      transaction {
-        prepare(acct: AuthAccount) {
+      import AFLNFT from 0x01cf0e2f2f715450
+        transaction {
+          prepare(acct: AuthAccount) {
 
-        let collection  <- XGStudio.createEmptyCollection()
-        // store the empty NFT Collection in account storage
-        acct.save( <- collection, to:XGStudio.CollectionStoragePath)
-        log("Collection created for account".concat(acct.address.toString()))
-        // create a public capability for the Collection
-        acct.link<&{XGStudio.XGStudioCollectionPublic}>(XGStudio.CollectionPublicPath, target:XGStudio.CollectionStoragePath)        
-      }   
-    }
+          let collection  <- AFLNFT.createEmptyCollection()
+          // store the empty NFT Collection in account storage
+          acct.save( <- collection, to:AFLNFT.CollectionStoragePath)
+          log("Collection created for account".concat(acct.address.toString()))
+          // create a public capability for the Collection
+          acct.link<&{AFLNFT.AFLNFTCollectionPublic}>(AFLNFT.CollectionPublicPath, target:AFLNFT.CollectionStoragePath)
+          log("Capability created")
+      }
+}
+
     `,
       fcl.payer(fcl.authz),
       fcl.proposer(fcl.authz),
@@ -44,10 +46,10 @@ const App = () => {
   const destroyAccount = async () => {
     const transactionId = await fcl.send([
       fcl.transaction`
-      import XGStudio from 0xff321cc072da62b3
+      import AFLNFT from 0x01cf0e2f2f715450
       transaction(){
           prepare(acct:AuthAccount){
-            let storage <- acct.load<@XGStudio.Collection>(from: XGStudio.CollectionStoragePath)
+            let storage <- acct.load<@AFLNFT.Collection>(from: AFLNFT.CollectionStoragePath)
                       ??panic("could not load")
             destroy storage
 
@@ -90,7 +92,7 @@ const App = () => {
         }
       }
       `,
-      fcl.payer(serverAuthorization),
+      fcl.payer(fcl.authz),
       fcl.proposer(fcl.authz),
       fcl.authorizations([fcl.authz, serverAuthorization]),
       fcl.limit(9999)

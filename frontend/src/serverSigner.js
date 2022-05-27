@@ -14,8 +14,8 @@ const getSignature = async (signable) => {
 }
 
 export const serverAuthorization = async (account) => {
-
-  const addr = "0xff321cc072da62b3";
+  // address for the emulator address
+  const addr = "0x01cf0e2f2f715450";
   const keyId = 0;
 
   return {
