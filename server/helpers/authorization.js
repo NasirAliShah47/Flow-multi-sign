@@ -5,7 +5,7 @@ const ec = new EC('secp256k1');
 
 // private key for the emulator address
 
-const PRIVATE_KEY = "e26834a635cbd723a8a2c45d51f7dbe8b490cc6f52e2491f6b7dd907387e2bfb";
+const PRIVATE_KEY = "5af9735deb0388208105fe8975204ad36bbec9151101a8e6ceaf3a2e89ecf22f";
 
 const sign = (message) => {
     const key = ec.keyFromPrivate(Buffer.from(PRIVATE_KEY, "hex"));

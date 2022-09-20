@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@onflow/fcl": "^0.0.78",
-    "@onflow/types": "^0.0.6",
+    "@onflow/fcl": "^1.2.1",
+    "@onflow/types": "^1.0.3",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
