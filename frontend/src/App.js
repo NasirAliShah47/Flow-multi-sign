@@ -32,18 +32,18 @@ const App = () => {
   const setupAccount = async () => {
     const transactionId = await fcl.send([
       fcl.transaction`
-      import AFLNFT from 0x01cf0e2f2f715450
+      import MyNFT from 0x01cf0e2f2f715450
 
       transaction {
           prepare(account: AuthAccount){
               
-              let collection <- AFLNFT.createEmptyCollection() as! @AFLNFT.Collection
+              let collection <- MyNFT.createEmptyCollection() as! @MyNFT.Collection
       
-              account.save(<- collection, to: AFLNFT.CollectionStoragePath)
+              account.save(<- collection, to: MyNFT.CollectionStoragePath)
       
-              account.link<&{AFLNFT.AFLNFTCollectionPublic}>(
-                  AFLNFT.CollectionPublicPath,
-                  target: AFLNFT.CollectionStoragePath)
+              account.link<&{MyNFT.MyNFTCollectionPublic}>(
+                  MyNFT.CollectionPublicPath,
+                  target: MyNFT.CollectionStoragePath)
           }
       }
 
@@ -60,10 +60,10 @@ const App = () => {
   const destroyAccount = async () => {
     const transactionId = await fcl.send([
       fcl.transaction`
-      import AFLNFT from 0x01cf0e2f2f715450
+      import MyNFT from 0x01cf0e2f2f715450
       transaction(){
           prepare(acct:AuthAccount){
-            let storage <- acct.load<@AFLNFT.Collection>(from: AFLNFT.CollectionStoragePath)
+            let storage <- acct.load<@MyNFT.Collection>(from: MyNFT.CollectionStoragePath)
                       ??panic("could not load")
             destroy storage
 
@@ -117,9 +117,9 @@ const App = () => {
   const getTemplateById = async () => {
     const script = await fcl.send([
       fcl.script(`
-      import AFLNFT from 0x01cf0e2f2f715450
-      pub fun main(): AFLNFT.Template {
-        return AFLNFT.getTemplateById(templateId: 1)
+      import MyNFT from 0x01cf0e2f2f715450
+      pub fun main(): MyNFT.Template {
+        return MyNFT.getTemplateById(templateId: 1)
     }
       `)
     ]).then(fcl.decode)
@@ -128,13 +128,13 @@ const App = () => {
   const getNFTDataId = async () => {
     const script = await fcl.send([
       fcl.script(`
-      import AFLNFT from 0x01cf0e2f2f715450
+      import MyNFT from 0x01cf0e2f2f715450
 
     pub fun main() : AnyStruct{    
-    var nftData = AFLNFT.getNFTData(nftId: 1)
+    var nftData = MyNFT.getNFTData(nftId: 1)
     
 
-    var templateData =  AFLNFT.getTemplateById(templateId: nftData.templateId)
+    var templateData =  MyNFT.getTemplateById(templateId: nftData.templateId)
     var nftMetaData : {String:AnyStruct} = {}
 
     nftMetaData["templateId"] =nftData.templateId;
